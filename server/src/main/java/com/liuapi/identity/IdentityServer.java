@@ -6,6 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.io.IOException;
+
 /**
  * @auther 柳俊阳
  * @github https://github.com/johnliu1122/
@@ -15,11 +17,14 @@ import org.springframework.context.ConfigurableApplicationContext;
  */
 @SpringBootApplication
 public class IdentityServer {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ConfigurableApplicationContext context = SpringApplication.run(IdentityServer.class);
         SegmentService service = context.getBean(SegmentService.class);
 
         Segment segment = service.retrieveSegment("user");
         System.out.println(segment);
+        while (true){
+            System.in.read();
+        }
     }
 }

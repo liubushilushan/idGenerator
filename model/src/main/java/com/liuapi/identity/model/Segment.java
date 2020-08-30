@@ -1,5 +1,8 @@
 package com.liuapi.identity.model;
 
+import com.liuapi.identity.exception.IdentityExhaustedException;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -9,6 +12,7 @@ import java.io.Serializable;
  * @email johnliu1122@163.com
  * @date 2020/8/29
  */
+@Data
 public class Segment implements Serializable {
     public static final long serialVersionUID = 1L;
 
@@ -20,7 +24,7 @@ public class Segment implements Serializable {
         this.max = max;
         this.next = min;
     }
-    public synchronized long retrieve() throws IdentityExhaustedException{
+    public synchronized long retrieve() throws IdentityExhaustedException {
         if(next<=max){
             return next++;
         }

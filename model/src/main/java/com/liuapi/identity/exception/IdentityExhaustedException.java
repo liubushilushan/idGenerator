@@ -1,4 +1,4 @@
-package com.liuapi.identity.model;
+package com.liuapi.identity.exception;
 
 /**
  * 1、取号段
