@@ -1,4 +1,4 @@
-package com.liuapi.service.identity;
+package com.liuapi.service.identity.model;
 
 /**
  * @auther 柳俊阳
