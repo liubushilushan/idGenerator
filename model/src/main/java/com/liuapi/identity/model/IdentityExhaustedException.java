@@ -1,4 +1,4 @@
-package com.liuapi.service.identity.model;
+package com.liuapi.identity.model;
 
 /**
  * 1、取号段

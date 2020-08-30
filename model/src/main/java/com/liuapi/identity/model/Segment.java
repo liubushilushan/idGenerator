@@ -1,4 +1,6 @@
-package com.liuapi.service.identity.model;
+package com.liuapi.identity.model;
+
+import java.io.Serializable;
 
 /**
  * @auther 柳俊阳
@@ -7,7 +9,9 @@ package com.liuapi.service.identity.model;
  * @email johnliu1122@163.com
  * @date 2020/8/29
  */
-public class Segment {
+public class Segment implements Serializable {
+    public static final long serialVersionUID = 1L;
+
     private long min;
     private long max;
     private long next;
@@ -21,5 +25,14 @@ public class Segment {
             return next++;
         }
         throw new IdentityExhaustedException();
+    }
+
+    @Override
+    public String toString() {
+        return "Segment{" +
+                "min=" + min +
+                ", max=" + max +
+                ", next=" + next +
+                '}';
     }
 }

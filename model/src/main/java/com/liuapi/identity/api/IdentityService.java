@@ -1,4 +1,6 @@
-package com.liuapi.service.identity;
+package com.liuapi.identity.api;
+
+import com.liuapi.identity.model.Segment;
 
 /**
  * @auther 柳俊阳
@@ -7,5 +9,6 @@ package com.liuapi.service.identity;
  * @email johnliu1122@163.com
  * @date 2020/8/30
  */
-public class IdentityServer {
+public interface IdentityService {
+    Segment retrieveSegment(String biz_tag);
 }
