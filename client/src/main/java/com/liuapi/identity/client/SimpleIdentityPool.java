@@ -6,6 +6,7 @@ import com.liuapi.identity.model.Segment;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @auther 柳俊阳
@@ -14,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @email johnliu1122@163.com
  * @date 2020/8/30
  */
-public class SingleSegmentIdentityPool implements IdentityPool {
+public class SimpleIdentityPool implements IdentityPool {
     private IdentityService identityService;
 
     private Map<String, Segment> currents = new ConcurrentHashMap<>();
@@ -27,7 +28,7 @@ public class SingleSegmentIdentityPool implements IdentityPool {
                 try {
                     return segment.retrieve();
                 } catch (SegmentExhaustedException e) {
-                    // 表示当前号段的id已用尽
+                    // 表示当前号段的id已用尽,则获取下一个号段
                 }
             }
             // ConcurrentHashMap确保只有一个线程会去加载新的号段
