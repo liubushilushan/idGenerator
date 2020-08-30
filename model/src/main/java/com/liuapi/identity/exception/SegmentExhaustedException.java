@@ -9,5 +9,5 @@ package com.liuapi.identity.exception;
  * @email johnliu1122@163.com
  * @date 2020/8/29
  */
-public class IdentityExhaustedException extends RuntimeException{
+public class SegmentExhaustedException extends Exception{
 }

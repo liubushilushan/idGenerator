@@ -1,6 +1,6 @@
 package com.liuapi.identity.model;
 
-import com.liuapi.identity.exception.IdentityExhaustedException;
+import com.liuapi.identity.exception.SegmentExhaustedException;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -24,11 +24,11 @@ public class Segment implements Serializable {
         this.max = max;
         this.next = min;
     }
-    public synchronized long retrieve() throws IdentityExhaustedException {
+    public synchronized long retrieve() throws SegmentExhaustedException {
         if(next<=max){
             return next++;
         }
-        throw new IdentityExhaustedException();
+        throw new SegmentExhaustedException();
     }
 
     @Override
