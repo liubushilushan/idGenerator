@@ -1,6 +1,5 @@
 package com.liuapi.identity.api;
 
-import com.liuapi.identity.exception.NoSuchBizTagException;
 import com.liuapi.identity.model.Segment;
 
 /**

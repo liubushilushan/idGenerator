@@ -1,7 +1,6 @@
 package com.liuapi.identity.provider;
 
 import com.liuapi.identity.api.IdentityService;
-import com.liuapi.identity.exception.NoSuchBizTagException;
 import com.liuapi.identity.model.Segment;
 import com.liuapi.identity.service.SegmentService;
 import org.apache.dubbo.config.annotation.Service;
@@ -19,7 +18,7 @@ public class IdentityServiceProvider implements IdentityService {
     @Autowired
     private SegmentService segmentService;
 
-    public Segment retrieveSegment(String bizTag)  throws NoSuchBizTagException {
+    public Segment retrieveSegment(String bizTag)  {
         return segmentService.retrieveSegment(bizTag);
     }
 }

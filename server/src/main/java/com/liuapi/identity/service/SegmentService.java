@@ -1,7 +1,5 @@
 package com.liuapi.identity.service;
 
-import com.liuapi.identity.api.IdentityService;
-import com.liuapi.identity.exception.NoSuchBizTagException;
 import com.liuapi.identity.mapper.IdentityMapper;
 import com.liuapi.identity.model.Segment;
 import com.liuapi.identity.model.domain.IdentityDO;
@@ -30,7 +28,7 @@ public class SegmentService {
      * @return
      */
     @Transactional(propagation = Propagation.REQUIRED)
-    public Segment retrieveSegment(String bizTag) throws NoSuchBizTagException {
+    public Segment retrieveSegment(String bizTag) {
         // 此处获取数据库行锁
         int update = identityMapper.update(bizTag);
         if(update == 0){
