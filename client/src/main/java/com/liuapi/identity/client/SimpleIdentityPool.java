@@ -24,15 +24,26 @@ public class SimpleIdentityPool implements IdentityPool {
     public long generateId(String bizTag) {
         do {
             Segment segment = currents.get(bizTag);
-            if (segment != null) {
+            if (null == segment) {
+                // 第一次加载号段
+                currents.computeIfAbsent(bizTag, this::retrieveSegment);
+            } else {
+                // 后续加载号段
                 try {
                     return segment.retrieve();
                 } catch (SegmentExhaustedException e) {
                     // 表示当前号段的id已用尽,则获取下一个号段
+                    synchronized (segment) {
+                        if (segment == currents.get(bizTag)) {
+                            currents.put(bizTag, this.retrieveSegment(bizTag));
+                        }
+                    }
                 }
             }
-            // ConcurrentHashMap确保只有一个线程会去加载新的号段
-            currents.computeIfAbsent(bizTag, identityService::retrieveSegment);
         } while (true);
+    }
+
+    private Segment retrieveSegment(String bizTag){
+        return identityService.retrieveSegment(bizTag);
     }
 }

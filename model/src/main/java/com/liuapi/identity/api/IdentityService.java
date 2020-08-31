@@ -10,5 +10,5 @@ import com.liuapi.identity.model.Segment;
  * @date 2020/8/30
  */
 public interface IdentityService {
-    Segment retrieveSegment(String bizTag) throws NoSuchBizTagException;
+    Segment retrieveSegment(String bizTag);
 }

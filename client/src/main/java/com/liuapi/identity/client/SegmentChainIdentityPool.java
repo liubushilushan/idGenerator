@@ -21,15 +21,17 @@ public class SegmentChainIdentityPool implements IdentityPool {
     private IdentityService identityService;
     private Map<String, Segment> currents = new ConcurrentHashMap<>();
     private ExecutorService idWorkers = new ThreadPoolExecutor(
-            2, 2, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(100)
+            3, 3, 0, TimeUnit.MILLISECONDS, new SynchronousQueue<>()
     );
 
 
     @Override
-    public long generateId(String bizTag) throws InterruptedException {
+    public long generateId(String bizTag) {
         do {
             Segment segment = currents.get(bizTag);
-            if (segment != null) {
+            if (segment == null) {
+                currents.computeIfAbsent(bizTag, this::retrieveSegment);
+            } else {
                 try {
                     long allocatedId = segment.retrieve();
                     if (segment.getSignalId() == allocatedId) {
@@ -39,44 +41,27 @@ public class SegmentChainIdentityPool implements IdentityPool {
                     return allocatedId;
                 } catch (SegmentExhaustedException e) {
                     // 表示当前号段的id已用尽,则获取下一个号段
-                }
-            }
-            // ConcurrentHashMap确保只有一个线程会去加载新的号段
-            try {
-                currents.computeIfAbsent(bizTag, a -> {
-                    if (segment == null) {
-                        try {
-                            return new SegmentLoadTask(bizTag).call();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        try {
-                            return segment.getNextTask().get(100, TimeUnit.SECONDS);
-                        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                            e.printStackTrace();
+                    synchronized (segment) {
+                        if (segment == currents.get(bizTag)) {
+                            FutureTask<Segment> nextTask = segment.getNextTask();
+                            try {
+                                Segment nextSegment = nextTask.get(10, TimeUnit.SECONDS);
+                                currents.put(bizTag, nextSegment);
+                            } catch (InterruptedException | ExecutionException | TimeoutException e1) {
+                                e1.printStackTrace();
+                                // 再次执行该任务
+                                nextTask.run();
+                            }
                         }
                     }
-                    throw new SegmentLoadFailException();
-                });
-            } catch (SegmentLoadFailException e) {
-                throw e;
+                }
             }
         } while (true);
     }
 
-    public class SegmentLoadTask implements Callable<Segment> {
-        public final String bizTag;
-
-        public SegmentLoadTask(String bizTag) {
-            this.bizTag = bizTag;
-        }
-
-        @Override
-        public Segment call() throws Exception {
-            Segment next = identityService.retrieveSegment(bizTag);
-            next.setNextTask(new FutureTask<>(new SegmentLoadTask(bizTag)));
-            return next;
-        }
+    private Segment retrieveSegment(String bizTag) {
+        Segment nextSegment = identityService.retrieveSegment(bizTag);
+        nextSegment.setNextTask(new FutureTask<>(() -> this.retrieveSegment(bizTag)));
+        return nextSegment;
     }
 }
