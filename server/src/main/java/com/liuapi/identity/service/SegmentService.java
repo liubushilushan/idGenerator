@@ -34,15 +34,20 @@ public class SegmentService {
         // 此处获取数据库行锁
         int update = identityMapper.update(bizTag);
         if(update == 0){
-            // 说明没有这个业务标签
-            throw new NoSuchBizTagException();
+            /**
+             * 场景：没有这个业务标签
+             * * RC的隔离级别下多个线程可能会同时执行identityMapper.insertOrUpdateMaxId这个操作。
+             * * RR的隔离级别下只有一个线程会执行identityMapper.insertOrUpdateMaxId这个操作，
+             * 其他线程阻塞在identityMapper.update操作上。
+             */
+            identityMapper.insertOrUpdateMaxId(bizTag);
         }
         IdentityDO idc = identityMapper.query(bizTag);
 
         long step = idc.getStep();
         long maxId = idc.getMaxId();
 
-        return new Segment(maxId-step+1,maxId);
+        return new Segment(maxId-step+1,maxId,bizTag);
         // 释放行锁
     }
 
