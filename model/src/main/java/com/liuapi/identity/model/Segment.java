@@ -55,7 +55,6 @@ public class Segment implements Serializable {
                 "bizTag='" + bizTag + '\'' +
                 ", min=" + min +
                 ", max=" + max +
-                ", nextId=" + nextId +
                 '}';
     }
 
