@@ -6,6 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @auther 柳俊阳
@@ -22,28 +23,30 @@ public class Segment implements Serializable {
     private final long min;
     private final long max;
     // 最大的已分配id
-    private long nextId;
+    private final AtomicLong nextId;
     // 标记位进行通知
-    private long signalId;
-    private FutureTask<Segment> next;
+    private final long signalId;
 
-    public Segment(long min,long max,String bizTag){
-        if(min>max){
+    private FutureTask<Segment> nextTask;
+
+    public Segment(long min, long max, String bizTag) {
+        if (min > max) {
             throw new IllegalArgumentException("minId is larger than maxId");
         }
         this.min = min;
         this.max = max;
-        this.nextId = min;
+        this.nextId = new AtomicLong(min);
         this.bizTag = bizTag;
-        long step = max-min+1;
-        this.signalId = (long)Math.floor(step*0.1)+min;
+        long step = max - min + 1;
+        this.signalId = (long) Math.floor(step * 0.1) + min;
     }
 
-    public synchronized long retrieve() throws SegmentExhaustedException {
-        if(nextId <=max){
-            return nextId++;
+    public long retrieve() throws SegmentExhaustedException {
+        long allocatedId = nextId.getAndIncrement();
+        if (allocatedId > max) {
+            throw new SegmentExhaustedException();
         }
-        throw new SegmentExhaustedException();
+        return allocatedId;
     }
 
     @Override

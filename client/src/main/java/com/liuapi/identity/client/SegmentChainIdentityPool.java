@@ -33,8 +33,8 @@ public class SegmentChainIdentityPool implements IdentityPool {
                 try {
                     long allocatedId = segment.retrieve();
                     if (segment.getSignalId() == allocatedId) {
-                        // 启动后台任务去加载下一个号段
-                        idWorkers.submit(() -> segment.getNext().run());
+                        // 提交加载任务给线程池
+                        idWorkers.submit(segment.getNextTask());
                     }
                     return allocatedId;
                 } catch (SegmentExhaustedException e) {
@@ -52,7 +52,7 @@ public class SegmentChainIdentityPool implements IdentityPool {
                         }
                     } else {
                         try {
-                            return segment.getNext().get(100, TimeUnit.SECONDS);
+                            return segment.getNextTask().get(100, TimeUnit.SECONDS);
                         } catch (InterruptedException | ExecutionException | TimeoutException e) {
                             e.printStackTrace();
                         }
@@ -75,7 +75,7 @@ public class SegmentChainIdentityPool implements IdentityPool {
         @Override
         public Segment call() throws Exception {
             Segment next = identityService.retrieveSegment(bizTag);
-            next.setNext(new FutureTask<>(new SegmentLoadTask(bizTag)));
+            next.setNextTask(new FutureTask<>(new SegmentLoadTask(bizTag)));
             return next;
         }
     }
