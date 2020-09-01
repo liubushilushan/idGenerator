@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
-        <module>idc-server</module>
+        <module>ids-server</module>
         <module>idc-client</module>
         <module>idc-api</module>
         <module>idc-test</module>
