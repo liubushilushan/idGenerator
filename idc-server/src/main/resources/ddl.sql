@@ -9,3 +9,8 @@ CREATE TABLE `identity_t` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`biz_tag`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 记录服务段重启次数
+INSERT INTO `idc`.`identity_t`
+(`biz_tag`, `max_id`, `step`) VALUES ('reload.times', '0', '1');
+

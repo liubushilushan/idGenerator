@@ -27,18 +27,19 @@ import java.util.concurrent.Executors;
 public class TestController {
     @Autowired
     private OrganizationService organizationService;
+
     /**
      * 创建机构
      */
     private ExecutorService workers = Executors.newFixedThreadPool(20);
+
     @GetMapping("/create/org/{number}")
-    public List<Long> createOrganizations(@PathVariable("number") int number){
-        List<Long> ids = new ArrayList<>(number);
-        while(number-->0) {
-            long id = organizationService.createOrganization();
-            ids.add(id);
+    public String createOrganizations(@PathVariable("number") int number) {
+        while (number-- > 0) {
+            workers.submit(() -> {
+               organizationService.createOrganization();
+            });
         }
-        Collections.sort(ids);
-        return ids;
+        return "ok";
     }
 }
