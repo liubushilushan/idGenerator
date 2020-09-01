@@ -7,6 +7,6 @@ package com.liuapi.identity.client;
  * @email johnliu1122@163.com
  * @date 2020/8/30
  */
-public interface IdentityPool {
+public interface IdentityFactory {
     long generateId(String bizTag) throws InterruptedException;
 }

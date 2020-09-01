@@ -9,9 +9,10 @@
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
-        <module>server</module>
-        <module>client</module>
-        <module>model</module>
+        <module>idc-server</module>
+        <module>idc-client</module>
+        <module>idc-api</module>
+        <module>idc-test</module>
     </modules>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -30,7 +31,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.liuapi.identity</groupId>
-                <artifactId>model</artifactId>
+                <artifactId>idc-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

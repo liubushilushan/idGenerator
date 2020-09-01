@@ -3,10 +3,11 @@ package com.liuapi.identity.client;
 import com.liuapi.identity.api.IdentityService;
 import com.liuapi.identity.exception.SegmentExhaustedException;
 import com.liuapi.identity.model.Segment;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @auther 柳俊阳
@@ -15,7 +16,9 @@ import java.util.concurrent.TimeUnit;
  * @email johnliu1122@163.com
  * @date 2020/8/30
  */
-public class SimpleIdentityPool implements IdentityPool {
+@Service
+public class SimpleIdentityFactory implements IdentityFactory {
+    @Reference
     private IdentityService identityService;
 
     private Map<String, Segment> currents = new ConcurrentHashMap<>();
@@ -32,9 +35,12 @@ public class SimpleIdentityPool implements IdentityPool {
                 try {
                     return segment.retrieve();
                 } catch (SegmentExhaustedException e) {
-                    // DCL 表示当前号段的id已用尽,则获取下一个号段
+                    // DCL
                     if (segment == currents.get(bizTag)){
                         synchronized (segment) {
+                            /**
+                             * 当且仅当已耗尽的号段存在在容器时才更新
+                             */
                             if (segment == currents.get(bizTag)) {
                                 currents.put(bizTag, this.retrieveSegment(bizTag));
                             }

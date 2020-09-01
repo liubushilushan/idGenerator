@@ -2,23 +2,25 @@ package com.liuapi.identity.client;
 
 import com.liuapi.identity.api.IdentityService;
 import com.liuapi.identity.exception.SegmentExhaustedException;
-import com.liuapi.identity.exception.SegmentLoadFailException;
 import com.liuapi.identity.model.Segment;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
 
 import java.util.Map;
 import java.util.concurrent.*;
 
 /**
- * 当前号段用尽，则使用下一个号段
- *
  * @auther 柳俊阳
  * @github https://github.com/johnliu1122/
  * @csdn https://blog.csdn.net/qq_35695616
  * @email johnliu1122@163.com
  * @date 2020/8/30
  */
-public class SegmentChainIdentityPool implements IdentityPool {
+@Service
+public class SegmentChainIdentityFactory implements IdentityFactory {
+    @Reference
     private IdentityService identityService;
+
     private Map<String, Segment> currents = new ConcurrentHashMap<>();
     private ExecutorService idWorkers = new ThreadPoolExecutor(
             3, 3, 0, TimeUnit.MILLISECONDS, new SynchronousQueue<>()
@@ -40,7 +42,6 @@ public class SegmentChainIdentityPool implements IdentityPool {
                     }
                     return allocatedId;
                 } catch (SegmentExhaustedException e) {
-                    // 表示当前号段的id已用尽,则获取下一个号段
                     if (segment == currents.get(bizTag)){
                         synchronized (segment) {
                             if (segment == currents.get(bizTag)) {
