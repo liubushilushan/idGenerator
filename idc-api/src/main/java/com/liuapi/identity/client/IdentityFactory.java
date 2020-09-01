@@ -8,5 +8,5 @@ package com.liuapi.identity.client;
  * @date 2020/8/30
  */
 public interface IdentityFactory {
-    long generateId(String bizTag) throws InterruptedException;
+    long generateId(String bizTag);
 }
