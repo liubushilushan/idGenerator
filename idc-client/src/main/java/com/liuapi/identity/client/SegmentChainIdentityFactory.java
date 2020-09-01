@@ -3,8 +3,8 @@ package com.liuapi.identity.client;
 import com.liuapi.identity.api.IdentityService;
 import com.liuapi.identity.exception.SegmentExhaustedException;
 import com.liuapi.identity.model.Segment;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.concurrent.*;
@@ -18,7 +18,7 @@ import java.util.concurrent.*;
  */
 @Service
 public class SegmentChainIdentityFactory implements IdentityFactory {
-    @Reference
+    @Autowired
     private IdentityService identityService;
 
     private Map<String, Segment> currents = new ConcurrentHashMap<>();
@@ -42,7 +42,7 @@ public class SegmentChainIdentityFactory implements IdentityFactory {
                     }
                     return allocatedId;
                 } catch (SegmentExhaustedException e) {
-                    if (segment == currents.get(bizTag)){
+                    if (segment == currents.get(bizTag)) {
                         synchronized (segment) {
                             if (segment == currents.get(bizTag)) {
                                 FutureTask<Segment> nextTask = segment.getNextTask();
