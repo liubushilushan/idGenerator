@@ -41,16 +41,18 @@ public class SegmentChainIdentityPool implements IdentityPool {
                     return allocatedId;
                 } catch (SegmentExhaustedException e) {
                     // 表示当前号段的id已用尽,则获取下一个号段
-                    synchronized (segment) {
-                        if (segment == currents.get(bizTag)) {
-                            FutureTask<Segment> nextTask = segment.getNextTask();
-                            try {
-                                Segment nextSegment = nextTask.get(10, TimeUnit.SECONDS);
-                                currents.put(bizTag, nextSegment);
-                            } catch (InterruptedException | ExecutionException | TimeoutException e1) {
-                                e1.printStackTrace();
-                                // 再次执行该任务
-                                nextTask.run();
+                    if (segment == currents.get(bizTag)){
+                        synchronized (segment) {
+                            if (segment == currents.get(bizTag)) {
+                                FutureTask<Segment> nextTask = segment.getNextTask();
+                                try {
+                                    Segment nextSegment = nextTask.get(10, TimeUnit.SECONDS);
+                                    currents.put(bizTag, nextSegment);
+                                } catch (InterruptedException | ExecutionException | TimeoutException e1) {
+                                    e1.printStackTrace();
+                                    // 再次执行该任务
+                                    nextTask.run();
+                                }
                             }
                         }
                     }

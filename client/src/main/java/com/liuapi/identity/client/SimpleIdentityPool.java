@@ -32,10 +32,12 @@ public class SimpleIdentityPool implements IdentityPool {
                 try {
                     return segment.retrieve();
                 } catch (SegmentExhaustedException e) {
-                    // 表示当前号段的id已用尽,则获取下一个号段
-                    synchronized (segment) {
-                        if (segment == currents.get(bizTag)) {
-                            currents.put(bizTag, this.retrieveSegment(bizTag));
+                    // DCL 表示当前号段的id已用尽,则获取下一个号段
+                    if (segment == currents.get(bizTag)){
+                        synchronized (segment) {
+                            if (segment == currents.get(bizTag)) {
+                                currents.put(bizTag, this.retrieveSegment(bizTag));
+                            }
                         }
                     }
                 }
