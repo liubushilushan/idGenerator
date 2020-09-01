@@ -1,6 +1,7 @@
-package com.liuapi.identity.client;
+package com.liuapi.identity.client.impl;
 
 import com.liuapi.identity.api.IdentityService;
+import com.liuapi.identity.client.IdentityFactory;
 import com.liuapi.identity.exception.SegmentExhaustedException;
 import com.liuapi.identity.model.Segment;
 import org.springframework.beans.factory.annotation.Autowired;
