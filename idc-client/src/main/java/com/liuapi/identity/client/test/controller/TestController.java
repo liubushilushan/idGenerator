@@ -1,17 +1,12 @@
 package com.liuapi.identity.client.test.controller;
 
-import com.liuapi.identity.client.test.service.OrganizationService;
+import com.liuapi.identity.client.test.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,20 +21,25 @@ import java.util.concurrent.Executors;
 @RequestMapping("/test")
 public class TestController {
     @Autowired
-    private OrganizationService organizationService;
+    private UserService userService;
 
-    /**
-     * 创建机构
-     */
     private ExecutorService workers = Executors.newFixedThreadPool(20);
 
-    @GetMapping("/create/org/{number}")
-    public String createOrganizations(@PathVariable("number") int number) {
+    @GetMapping("/create/user/{number}")
+    public String createUsers(@PathVariable("number") int number) {
         while (number-- > 0) {
+            /**
+             * 模仿多个客户端调用该接口
+             */
             workers.submit(() -> {
-               organizationService.createOrganization();
+                userService.testCreateUserOfFunction();
             });
         }
         return "ok";
+    }
+
+    @GetMapping("/create/user")
+    public long createUser() {
+        return userService.testCreateUserOfTps();
     }
 }
