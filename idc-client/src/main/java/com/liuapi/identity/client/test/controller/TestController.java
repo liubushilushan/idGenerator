@@ -25,21 +25,25 @@ public class TestController {
 
     private ExecutorService workers = Executors.newFixedThreadPool(20);
 
-    @GetMapping("/create/user/{number}")
+    @GetMapping("/strategy1/user/{number}")
     public String createUsers(@PathVariable("number") int number) {
         while (number-- > 0) {
             /**
              * 模仿多个客户端调用该接口
              */
-            workers.submit(() -> {
-                userService.testCreateUserOfFunction();
-            });
+            workers.submit(userService::testCreateStrategy1);
         }
         return "ok";
     }
 
-    @GetMapping("/create/user")
-    public long createUser() {
-        return userService.testCreateUserOfTps();
+    @GetMapping("/strategy2/user/{number}")
+    public String createUser(@PathVariable("number") int number) {
+        while (number-- > 0) {
+            /**
+             * 模仿多个客户端调用该接口
+             */
+            workers.submit(userService::testCreateStrategy2);
+        }
+        return "ok";
     }
 }
