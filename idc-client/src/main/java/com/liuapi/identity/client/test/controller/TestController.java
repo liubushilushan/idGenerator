@@ -25,6 +25,11 @@ public class TestController {
 
     private ExecutorService workers = Executors.newFixedThreadPool(20);
 
+    @GetMapping("/tps/id")
+    public long testTps() {
+        return userService.testTps();
+    }
+
     @GetMapping("/strategy1/user/{number}")
     public String createUsers(@PathVariable("number") int number) {
         while (number-- > 0) {

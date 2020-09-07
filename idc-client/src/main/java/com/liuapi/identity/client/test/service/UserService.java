@@ -37,4 +37,9 @@ public class UserService {
         testMapper.insert(orgId,Thread.currentThread().getId(),BIZ_TAG_1);
     }
 
+    public long testTps() {
+        long orgId = segmentChainIdentityFactory.generateId(BIZ_TAG);
+        return orgId;
+    }
+
 }

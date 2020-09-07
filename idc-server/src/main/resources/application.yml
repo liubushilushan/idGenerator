@@ -1,9 +1,9 @@
 spring:
   # 配置默认数据源-HikariDataSource
   datasource:
-    url: jdbc:mysql://localhost:3306/idc?useUnicode=true&characterEncoding=utf-8&useSSL=false&useLocalSessionState=true&serverTimezone=UTC
+    url: jdbc:mysql://192.168.110.12:3306/idc?useUnicode=true&characterEncoding=utf-8&useSSL=false&useLocalSessionState=true&serverTimezone=UTC
     username: root
-    password: tiger
+    password: pubtrans
     driverClassName: com.mysql.cj.jdbc.Driver
 dubbo:
   application:
@@ -12,7 +12,7 @@ dubbo:
     address: zookeeper://127.0.0.1:2181
   protocol:
     name: dubbo
-    port: 20881
+    port: 29999
 logging:
   level:
     root: info
