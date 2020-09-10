@@ -41,6 +41,10 @@ public class Segment implements Serializable {
         this.signalId = (long) Math.floor(step * 0.1) + min;
     }
 
+    public boolean isNeedSignal(long allocatedId){
+        return signalId == allocatedId;
+    }
+
     public long retrieve() throws SegmentExhaustedException {
         long allocatedId = nextId.getAndIncrement();
         if (allocatedId > max) {

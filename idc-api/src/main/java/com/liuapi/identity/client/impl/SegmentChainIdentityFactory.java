@@ -37,7 +37,7 @@ public class SegmentChainIdentityFactory implements IdentityFactory {
             } else {
                 try {
                     long allocatedId = segment.retrieve();
-                    if (segment.getSignalId() == allocatedId) {
+                    if (segment.isNeedSignal(allocatedId)) {
                         // 提交加载任务给线程池
                         idWorkers.submit(segment.getNextTask());
                     }
