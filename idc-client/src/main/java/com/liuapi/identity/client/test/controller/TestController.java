@@ -25,9 +25,22 @@ public class TestController {
 
     private ExecutorService workers = Executors.newFixedThreadPool(20);
 
+    /**
+     * 混合压测 同时压/tps/id，/tps2/id，/tps3/id
+     * @return
+     */
     @GetMapping("/tps/id")
-    public long testTps() {
-        return userService.testTps();
+    public long testTps1() {
+        return userService.testTps1();
+    }
+
+    @GetMapping("/tps2/id")
+    public long testTps2() {
+        return userService.testTps2();
+    }
+    @GetMapping("/tps3/id")
+    public long testTps3() {
+        return userService.testTps3();
     }
 
     @GetMapping("/strategy1/user/{number}")

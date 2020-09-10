@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService {
     public static final String BIZ_TAG = "user";
-    public static final String BIZ_TAG_1 = "user1";
+    public static final String ROLE_TAG = "role";
+    public static final String APP_TAG = "app";
     @Autowired
     private SegmentChainIdentityFactory segmentChainIdentityFactory;
     @Autowired
@@ -32,13 +33,21 @@ public class UserService {
      * 如果拿到id之后插入到表中，如果表有有报主键冲突，则测试失败
      */
     public void testCreateStrategy2() {
-        long orgId =  segmentChainIdentityFactory.generateId(BIZ_TAG_1);
+        long orgId =  segmentChainIdentityFactory.generateId(ROLE_TAG);
         // insert into user table
-        testMapper.insert(orgId,Thread.currentThread().getId(),BIZ_TAG_1);
+        testMapper.insert(orgId,Thread.currentThread().getId(),ROLE_TAG);
     }
 
-    public long testTps() {
+    public long testTps1() {
         long orgId = segmentChainIdentityFactory.generateId(BIZ_TAG);
+        return orgId;
+    }
+    public long testTps2() {
+        long orgId = segmentChainIdentityFactory.generateId(ROLE_TAG);
+        return orgId;
+    }
+    public long testTps3() {
+        long orgId = segmentChainIdentityFactory.generateId(APP_TAG);
         return orgId;
     }
 
