@@ -26,4 +26,5 @@
 * idc-api 提供给客户端接入的SDK: 客户端依赖该SDK来实现从服务端获取id的功能。
 * idc-common 公共模块包。
 
-
+## 压测结果
+压测环境：idc-server,idc-client 部署在4C8G的机子上。

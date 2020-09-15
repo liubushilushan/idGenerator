@@ -9,11 +9,11 @@ dubbo:
   application:
     name: apiGateway
   registry:
-    address: zookeeper://127.0.0.1:2181
+    address: zookeeper://192.168.110.12:2181
   protocol:
     name: dubbo
     port: 29999
 logging:
   level:
     root: info
-    com.liuapi.identity: debug
+    com.liuapi.identity: info
