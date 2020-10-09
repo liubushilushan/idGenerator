@@ -18,7 +18,7 @@ public interface IdentityMapper {
     @Update("update identity_t set max_id = max_id+step where biz_tag=#{bizTag}")
     int update(String bizTag);
 
-    @Insert("INSERT INTO `identity_t` (`biz_tag`,`max_id`,`step`) VALUES (#{bizTag},10,10) on duplicate key update max_id = max_id+step")
+    @Insert("INSERT INTO `identity_t` (`biz_tag`) VALUES (#{bizTag}) on duplicate key update max_id = max_id+step")
     int insertOrUpdateMaxId(String bizTag);
 
     @Results({

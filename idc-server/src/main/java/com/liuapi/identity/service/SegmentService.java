@@ -4,6 +4,7 @@ import com.liuapi.identity.mapper.IdentityMapper;
 import com.liuapi.identity.model.Segment;
 import com.liuapi.identity.model.domain.IdentityDO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,20 +24,18 @@ public class SegmentService {
     private IdentityMapper identityMapper;
 
     /**
-     * 获取新的号段
+     * RC隔离级别下获取新的号段
      * @param bizTag
      * @return
      */
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.READ_COMMITTED)
     public Segment retrieveSegment(String bizTag) {
-        // 此处获取数据库行锁
         int update = identityMapper.update(bizTag);
         if(update == 0){
             /**
-             * 场景：没有这个业务标签
-             * * RC的隔离级别下多个线程可能会同时执行identityMapper.insertOrUpdateMaxId这个操作。
-             * * RR的隔离级别下只有一个线程会执行identityMapper.insertOrUpdateMaxId这个操作，
-             * 其他线程阻塞在identityMapper.update操作上。
+             * 没有这个业务标签
+             * 注：
+             * RR隔离级别下会导致死锁
              */
             identityMapper.insertOrUpdateMaxId(bizTag);
         }
@@ -46,7 +45,6 @@ public class SegmentService {
         long maxId = idc.getMaxId();
 
         return new Segment(maxId-step+1,maxId,bizTag);
-        // 释放行锁
     }
 
 
