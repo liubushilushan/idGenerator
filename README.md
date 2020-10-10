@@ -27,4 +27,4 @@
 * idc-common 公共模块包。
 
 ## 压测结果
-压测环境：idc-server,idc-client 部署在4C8G的机子上。
+idc-server,idc-client部署在4C8G的机子上，TPS可达1万。
